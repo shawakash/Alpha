@@ -10,7 +10,7 @@ import ListCard from './ListCard';
 function Navbar() {
     return (
         
-            <nav className="flex flex-col gap-y-5 p-5 bg-slate-900 border-r-[1px] h-screen border-slate-500 w-96 sticky top-0">
+            <nav className="flex flex-col gap-y-5 p-5 bg-slate-900 bg-transparent backdrop-blur-lg border-r-[1px] h-screen border-slate-500 w-96 sticky top-0">
                 <div className="brand flex gap-x-4 items-center text-3xl tracking-wider text-teal-400 font-rob font-bold transition-all w-fit"><TbAlpha /><span className=''>Alpha</span></div>
                 <div className="search">
                     <input type="text" className="bg-slate-700 px-4 py-1 rounded-lg w-full text-slate-300 text-base outline-none" placeholder='🔍 Explore Alpha' />

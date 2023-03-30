@@ -6,10 +6,13 @@ import { FaLock, FaUserAstronaut } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom';
 import {axiosClient} from '../../utils/axiosClient';
 import { KEY_ACCESS_TOKEN, setItem } from '../../utils/localStorageManager';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/userSlice';
 function Login() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     async function handleSubmit (e) {
         e.preventDefault();
@@ -18,7 +21,10 @@ function Login() {
                 username,
                 password
             });
-            console.log(result.result.accessToken);  
+            console.log(result.result);
+            console.log(result.result.user)
+            const user = result.result.user;
+            dispatch(setUser(user));
             setItem(KEY_ACCESS_TOKEN, result.result.accessToken);
             navigate('/');
         } catch (error) {

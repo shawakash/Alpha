@@ -5,7 +5,7 @@ import ListCard from './ListCard';
 
 function Post() {
     return (
-        <div className="bg-slate-900 text-slate-200 flex flex-col px-10 py-5 w-full rounded-lg border-slate-500 border-[0.25px] gap-y-3">
+        <div className="bg-slate-900 bg-transparent backdrop-blur-lg text-slate-200 flex flex-col px-10 py-5 w-full rounded-lg border-slate-500 border-[0.25px] gap-y-3">
             <ListCard />
             <div className="caption w-fit">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus accusantium neque asperiores ad, perspiciatis nemo rerum quia commodi nam qui!
