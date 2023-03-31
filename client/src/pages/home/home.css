@@ -1,0 +1,29 @@
+.home {
+    background-image: url("../../assests/wallpaperflare.com_wallpaper\ \(4\).jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    scrollbar-shadow-color: aqua;
+    transition: all;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: whitesmoke;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: teal;
+}
+

@@ -9,9 +9,10 @@ module.exports = {
         popins: ['Poppins', 'sans-serif'],
         mon: ['Montserrat', 'sans-serif'],
         rob: ['Roboto', 'sans-serif'],
-        cab: ['Roboto', 'sans-serif']
+        cab: ['Roboto', 'sans-serif'],
+        cur: ['Cedarville Cursive', 'cursive'],
       },
-     
+      
     },
   },
   plugins: [],

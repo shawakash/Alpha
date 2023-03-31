@@ -1,4 +1,4 @@
-body {
+/* body {
     background-image: url("./wallpaperflare.com_wallpaper\ \(4\).jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -10,18 +10,18 @@ body {
     scrollbar-shadow-color: aqua;
     transition: all;
   }
-  
+   */
   /* Track */
-  ::-webkit-scrollbar-track {
+  /* ::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+   */
   /* Handle */
-  ::-webkit-scrollbar-thumb {
+  /* ::-webkit-scrollbar-thumb {
     background: whitesmoke;
   }
-  
+   */
   /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+  /* ::-webkit-scrollbar-thumb:hover {
     background: teal;
-  }
+  } */

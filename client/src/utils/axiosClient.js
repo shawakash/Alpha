@@ -24,26 +24,33 @@ axiosClient.interceptors.response.use(                  // implemented after the
         const statusCode = data.statusCode;
         const error = data.error;
 
-        if (data.status == 'success') {             // if accessToken is fine move forward
+        if (data.status == 'success') { 
+            console.log('Data', data);            // if accessToken is fine move forward
             return data;
         }
-        // if ( // if accessToken as well as refresh token is expired then we logout the user
-        //     statusCode == 401 &&
-        //     originalRequest.url == 'http://localhost:3000/auth/refresh'
-        // ) {
-        //     removeItem(KEY_ACCESS_TOKEN);
-        //     window.location.replace('/login', '_self');
-        //     return Promise.reject(error);
-        // }
-        // if (statusCode == 401) {  // if accessToken is expired but not the refresh token we call refresh api
-        //     const responseByRefresh = await axiosClient.get('/auth/refresh');
-        //     console.log(responseByRefresh);//////
-        //     if (responseByRefresh.status == 'success') {  // to handle the expiration of refreshToken
-        //         setItem(KEY_ACCESS_TOKEN, responseByRefresh.result);  // setting newAccessToken
-        //         originalRequest.headers['Authorization'] = `Bearer ${responseByRefresh.result}`; // sending newAccessToken to the initialy called api
-        //         return axios(originalRequest);
-        //     }
-        // }
+        if ( // if accessToken as well as refresh token is expired then we logout the user
+            statusCode == 401 &&
+            originalRequest.url == `${process.env.REACT_APP_SERVER_BASE_URL}/auth/refresh`
+        ) {
+            removeItem(KEY_ACCESS_TOKEN);
+            window.location.replace('/login', '_self');
+            return Promise.reject(error);
+        }
+        if (statusCode == 401 && !originalRequest._retry) {  // if accessToken is expired but not the refresh token we call refresh api
+
+            originalRequest._retry = true;
+            const response = await axios.create({
+                withCredentials: true
+            }).get(`${process.env.REACT_APP_SERVER_BASE_URL}/auth/refresh`)
+            console.log("response" ,response);//////
+            
+            if (response.status == 'success') {  // to handle the expiration of refreshToken
+                setItem(KEY_ACCESS_TOKEN, response.result.accessToken);  // setting newAccessToken
+                originalRequest.headers['Authorization'] = `Bearer ${response.result.accessToken}`; // sending newAccessToken to the initialy called api
+                return axios(originalRequest);
+            }
+
+        }
         return Promise.reject(error);
     }, async (error) => {
         try {
@@ -53,7 +60,7 @@ axiosClient.interceptors.response.use(                  // implemented after the
                 withCredentials: true,
             })
             .get(`${baseURL}/auth/refresh`);
-
+            console.log('err', responseByRefresh)
             if (responseByRefresh.status == 'success') {  // to handle the expiration of refreshToken
                 setItem(KEY_ACCESS_TOKEN, responseByRefresh.result);  // setting newAccessToken
                 originalRequest.headers['Authorization'] = `Bearer ${responseByRefresh.result}`; // sending newAccessToken to the initialy called api
@@ -66,3 +73,4 @@ axiosClient.interceptors.response.use(                  // implemented after the
         return Promise.reject(error);
     }                     // no error as backend doesn't error it sents error in success
 );
+
