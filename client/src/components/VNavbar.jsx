@@ -7,8 +7,10 @@ import { RiCommunityLine, RiUserFollowFill } from 'react-icons/ri';
 import { TbAlpha } from 'react-icons/tb';
 import ListCard from './ListCard';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Navbar() {
+    const user = useSelector(state => state.appConfigReducer.user);
     const searchRef = useRef(null);
     const navigate = useNavigate();
     return (
@@ -79,7 +81,7 @@ function Navbar() {
                 >
                     <Avatar
                         shape='circle'
-                        icon={<RiUserFollowFill />}
+                        src = {user?.avatar}
                         className='flex text-slate-400 items-center justify-center'
                         onClick={() => navigate('/profile/:userId')}
                     />

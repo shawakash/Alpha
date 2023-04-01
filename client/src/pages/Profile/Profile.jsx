@@ -2,28 +2,37 @@ import React, { useState } from 'react';
 import { Avatar } from 'antd';
 import { RiUserFollowFill } from 'react-icons/ri';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Profile() {
     const [followState, setFollowState] = useState(false);
     const navigate = useNavigate();
+    const user = useSelector(state => state.appConfigReducer.user);
+    console.log('from pro', user)
     return (
         <div className='flex flex-col items-center py-10 backdrop-blur-xl rounded-lg border-slate-500 border-[0.25px] gap-y-8 w-full'>
             <div className="img w-fit">
-                <Avatar shape='circle' size={250} src='https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png' className='flex items-center justify-center' />
+                <Avatar 
+                shape='circle' 
+                size={250} 
+                src={user?.avatar} 
+                className='flex items-center justify-center' 
+
+                />
             </div>
             <div className="name flex flex-col gap-y-1 items-center  font-rob">
                 <div className="realName text-5xl text-[#00C5C8] font-semibold">
-                    Akash Shaw
+                    {user?.name}
                 </div>
                 <div className="username text-slate-400 text-lg italic">
-                    shawakash2003
+                    {user?.username}
                 </div>
             </div>
             <div className="email text-slate-300 font-medium font-rob text-xl ">
-                a.shaw@iitg.ac.in
+                {user?.email}
             </div>
             <div className="About flex w-[450px] text-center font-normal leading-6 font-rob text-slate-300 tracking-wider">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, architecto necessitatibus in ipsam repellendus dignissimos. Corrupti ratione illo itaque voluptates.
+                {user?.bio}
             </div>
             <div
                 className="Utilities flex gap-x-10 font-rob text-slate-300 text-lg"

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import CreatePost from '../../components/CreatePost';
 import HNavbar from '../../components/HNavbar';
@@ -8,21 +8,14 @@ import SideBar from '../../components/SideBar';
 import VNavbar from '../../components/VNavbar';
 import { axiosClient } from '../../utils/axiosClient';
 import './home.css';
-import LoadingBar from 'react-top-loading-bar';
+import { fetchData } from '../../redux/slices/appConfigSlice';
+import { getAllPost } from '../../redux/slices/postSlice';
 
 function Home() {
-    const user = useSelector((state) => state.userReducer.user);
+    const dispatch = useDispatch();
     useEffect(() => {
-        fetchData();
+        dispatch(fetchData());
     }, []);
-    async function fetchData() {
-        try {
-            const response = await axiosClient.get('/post/all');
-            console.log(response);
-        } catch (error) {
-            console.log(error)
-        }
-    }
     return (
         <div className="home flex bg-transparent text-slate-200">
             <VNavbar />

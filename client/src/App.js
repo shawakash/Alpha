@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button } from 'antd';
 import Login from './pages/login/Login';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import Signup from './pages/signup/Signup';
 import Home from './pages/home/Home';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -14,18 +14,32 @@ import CreatePost from './components/CreatePost';
 import LikedPost from './components/LikedPost';
 import UpdateProfile from './pages/Update/UpdateProfile';
 import DeleteAccount from './components/DeleteAccount';
+import { useSelector } from 'react-redux';
+import LoadingBar from 'react-top-loading-bar';
+
 
 
 function App() {
+  
+  const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
+  const loadingRef = useRef(null);
+  useEffect(() => {
+    if(isLoading) {
+      loadingRef.current?.continuousStart();
+    } else {
+      loadingRef.current?.complete();
+    }
+  },[isLoading]);
+  const {userId} = useSearchParams();
   return (
     <div className="App ">
-      {/* <Login /> */}
+      <LoadingBar color='#00C5C8' height={5} ref={loadingRef} />
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route element={<Home />}>
             <Route path='/' element={<Feed />} />
             <Route path='/profile/:userId' element={<Profile />}>
-              <Route path='' element={<Feed />} />
+              <Route path='' element={<Feed userId = {userId}/>} />
               <Route path='followers' element={<Followers />} />
               <Route path='following' element={<Following />} />
               <Route path='likedPost' element={<LikedPost />} />
