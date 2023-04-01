@@ -26,8 +26,7 @@ const userSchema = mongoose.Schema({
         unique: true,
     },
     avatar: {
-        publicId: String,
-        url: String
+        type: String
     },
     followers: [
         {
@@ -46,7 +45,11 @@ const userSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post',
         }
-    ]
+    ],
+    bio: {
+        type: String,
+        default: 'Your Bio'
+    }
 }, {
     timestamps: true,
 });

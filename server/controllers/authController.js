@@ -8,6 +8,8 @@ const signupController = async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
         const username = req.body.username;
+        const avatar = req.body.avatar;
+        console.log(avatar)
         const mobileNumber = req.body.mobileNumber;
         const existingUserName = await Users.findOne({ username: username });
         const existingEmail = await Users.findOne({ email: email });
@@ -17,7 +19,7 @@ const signupController = async (req, res) => {
             return;
         }
         if (!email || !mobileNumber || !username) {
-            res.status(400).json(wrapRespose.error(400, 'Data Absent :)'));
+            res.status(400).send(wrapRespose.error(400, 'Data Absent :)'));
             return;
         }
 
@@ -31,13 +33,14 @@ const signupController = async (req, res) => {
             password: hashedPassword,
             username,
             mobileNumber,
+            avatar
         });
         const users = await newUser.save();
         const createdUser = await Users.findById(users._id);
         if (!users) {
             return res.status(403).json(wrapRespose.error(403, ':)'));
         } else {
-            return res.status(201).json(wrapRespose.success(201, {createdUser}));
+            return res.status(201).json(wrapRespose.success(201, {users}));
         }
     } catch (error) {
         console.error(error);
@@ -69,7 +72,7 @@ const loginController = async (req, res) => {
             httpOnly: true,               // can be only accessed by backend
             secure: true
         });
-        return res.status(200).json(wrapRespose.success(200, {accessToken, refreshToken}));
+        return res.status(200).json(wrapRespose.success(200, {accessToken, refreshToken, user}));
     } catch (error) {
         console.error(error);
         process.exit(1);
@@ -81,7 +84,8 @@ const logoutController = async (req, res) => {
             httpOnly: true,
             secure: true
         });
-        return res.status(200).send(200, 'Logout Successfully from backend c;ear the local storage');
+        console.log('hola')
+        return res.send(200, 'Logout Successfully from backend c;ear the local storage');
     } catch (error) {
         return res.status(500).send(500, e.message);
     }
@@ -119,8 +123,8 @@ const generateAccessToken = (data) => {
     return token;
 }
 const generateRefreshToken = (data) => {
-    const accessTokenKey = process.env.REFRESH_TOKEN_KEY;
-    const token = jwt.sign(data, accessTokenKey, {
+    const refreshTokenKey = process.env.REFRESH_TOKEN_KEY;
+    const token = jwt.sign(data, refreshTokenKey, {
         expiresIn: '1y'
     });      // --> Generates a token
 

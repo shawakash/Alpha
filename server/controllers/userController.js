@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
 const wrapResponse = require('../utils/wrapResponse');
+const cloudinary = require('cloudinary').v2;
 
 const followUser = async (req, res) => {
     try {
@@ -104,6 +105,58 @@ const getUserPostController = async (req, res) => {
     }
 };
 
+const getUserProfile = async (req,res) => {
+    try {
+        const userId = req.body.userId;
+        const user = await User.findById(userId).populate({
+            path: 'post',
+            populate: {
+                path: owner,
+            }
+        });
+        if(!user) {
+            return res.status(404).send(wrapResponse.error(404, 'User Not found'));
+        }
+        console.log('user', user)
+        return res.status(201).send(wrapResponse.success(200, user));
+    } catch (error) {
+        
+    }
+};
+
+const updateProfileController = async (req,res) => {
+
+    try {
+        const userId = req._id;
+        const {avatar, name, bio, mobileNumber} = req.body;
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.status(404).send(wrapResponse.error(404, 'No such user in database'));
+        }
+        if(name) {
+            user.name = name;
+        }
+        if(bio) {
+            user.bio = bio;
+        }
+        if(mobileNumber) {
+            user.mobileNumber = mobileNumber;
+        }
+        if (avatar) {
+            const cloudImg = await cloudinary.uploader.upload(avatar, {
+                folder: "userImg",
+            });
+            user.avatar = `${cloudImg.secure_url}`;
+        }
+        await user.save();
+        return res.status(200).send(wrapResponse.success(200, user));
+    } catch (e) {
+        console.log(e)
+        return res.status(500).send(wrapResponse.error(500, e.message));
+    }
+
+};
+
 const deleteProfileController = async (req, res) => {
     try {
         const userId = req._id;
@@ -165,11 +218,13 @@ const deleteProfileController = async (req, res) => {
 };
 
 module.exports = {
+    getUserProfile,
     followUser,
     getPostOfFollowings,
     getUserPostController,
     getMyPostController,
     deleteProfileController,
+    updateProfileController
 };
 
 

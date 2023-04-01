@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
-const wrapResponse = require('../utils/wrapResponse')
+const wrapResponse = require('../utils/wrapResponse');
+const cloudinary = require('cloudinary').v2;
 
 const getAllPosController = async (req, res) => {
     const owner = req._id;
@@ -21,16 +22,26 @@ const getAllPosController = async (req, res) => {
         allPost.push(post);
     };
     console.log(allPost)
-    return res.json(wrapResponse.success(201, allPost));
+    return res.send(wrapResponse.success(201, allPost));
 }
 
 const createPostController = async (req, res) => {
     const caption = req.body.caption;
-    const image = req.body.image;
+    const postImage = req.body.image;
     const owner = req._id;
+    let image = {}
     const user = await User.findById(req._id);
     if (!caption) {
         return res.status(401).send(wrapResponse.error(401, 'Caption Needed'));
+    }
+    if(postImage) {
+        const cloudImg = await cloudinary.uploader.upload(postImage, {
+            folder: "postImg",
+        });
+        image = {
+            url: cloudImg.secure_url,
+            publicId: cloudImg.public_id
+        }
     }
     const post = await Post.create({
         caption,
