@@ -14,13 +14,13 @@ import CreatePost from './components/CreatePost';
 import LikedPost from './components/LikedPost';
 import UpdateProfile from './pages/Update/UpdateProfile';
 import DeleteAccount from './components/DeleteAccount';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingBar from 'react-top-loading-bar';
-
+import { getAllPost } from './redux/slices/postSlice';
 
 
 function App() {
-  
+  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
   const loadingRef = useRef(null);
   useEffect(() => {
@@ -30,7 +30,6 @@ function App() {
       loadingRef.current?.complete();
     }
   },[isLoading]);
-  const {userId} = useSearchParams();
   return (
     <div className="App ">
       <LoadingBar color='#00C5C8' height={5} ref={loadingRef} />
@@ -39,7 +38,7 @@ function App() {
           <Route element={<Home />}>
             <Route path='/' element={<Feed />} />
             <Route path='/profile/:userId' element={<Profile />}>
-              <Route path='' element={<Feed userId = {userId}/>} />
+              <Route path='' element={<Feed />} />
               <Route path='followers' element={<Followers />} />
               <Route path='following' element={<Following />} />
               <Route path='likedPost' element={<LikedPost />} />

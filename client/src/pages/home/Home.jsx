@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import CreatePost from '../../components/CreatePost';
@@ -9,13 +9,17 @@ import VNavbar from '../../components/VNavbar';
 import { axiosClient } from '../../utils/axiosClient';
 import './home.css';
 import { fetchData } from '../../redux/slices/appConfigSlice';
-import { getAllPost } from '../../redux/slices/postSlice';
+import { getAllPost, followingPost, getMyPost } from '../../redux/slices/postSlice';
 
 function Home() {
     const dispatch = useDispatch();
+    
     useEffect(() => {
         dispatch(fetchData());
+        dispatch(followingPost({}));
+        dispatch(getMyPost());
     }, []);
+    const user = useSelector((state) => state.appConfigReducer.user);    
     return (
         <div className="home flex bg-transparent text-slate-200">
             <VNavbar />

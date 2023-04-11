@@ -5,8 +5,6 @@ import ListCard from './ListCard';
 
 function Post(props) {
     let likes = props.likes;
-    console.log(likes)
-    
     return (
         <div className="bg-slate-900 bg-transparent backdrop-blur-lg text-slate-200 flex flex-col px-10 py-5 w-full rounded-lg border-slate-500 border-[0.25px] gap-y-3">
             <ListCard />

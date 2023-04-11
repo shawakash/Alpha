@@ -19,11 +19,11 @@ function CreatePost() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        dispatch(createPost({
-            owner: user._id,
-            caption: caption,
-            image: postImg
-        }));
+        // dispatch(createPost({
+        //     owner: user._id,
+        //     caption: caption,
+        //     image: postImg
+        // }));
     }
 
     function handleDrafting() {
