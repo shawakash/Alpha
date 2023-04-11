@@ -43,6 +43,7 @@ const createPostController = async (req, res) => {
             publicId: cloudImg.public_id
         }
     }
+    // 
     const post = await Post.create({
         caption,
         image,

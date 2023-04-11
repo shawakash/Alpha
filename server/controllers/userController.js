@@ -45,27 +45,32 @@ const getPostOfFollowings = async (req, res) => {
         if (!user) {
             return res.status(404).send(wrapResponse.error(404, 'User Not Found'));
         }
-        const folllowingIds = user.followings;
-        console.log(folllowingIds)
-        for (const followingId of folllowingIds) {
-            const followingUser = await User.findById(followingId);
-            const postIds = followingUser.post;
-            for (const postId of postIds) {
-                const post = await Post.findById(postId);
-                posts.push(post);
+        // const folllowingIds = user.followings;
+        // console.log(folllowingIds)
+        // for (const followingId of folllowingIds) {
+        //     const followingUser = await User.findById(followingId);
+        //     console.log(followingUser)
+        //     const postIds = followingUser.post;
+        //     console.log('I AM IN LOOP')
+        //     for (const postId of postIds) {
+        //         const post = await Post.findById(postId);
+        //         posts.push(post);
+        //     }
+            
+        // }
+        const post = await Post.find({
+            "owner": {
+                "$in": user.followings,
             }
-        }
-        return res.status(201).send(wrapResponse.success(201, posts));
+        });
+        console.log('From following post',post)
+        return res.status(201).send(wrapResponse.success(201, post));
 
         // shortcut
-        // const post = await Post.find({
-        //     "owner": {
-        //         "$in": user.followings,
-        //     }
-        // });
+        
         // the above is not prefreable for large number of users/posts
 
-    } catch (error) {
+    } catch (e) {
         return res.send(wrapResponse.error(500, e.message));
     }
 
@@ -104,6 +109,20 @@ const getUserPostController = async (req, res) => {
         return res.status(500).send(wrapResponse.error(500, 'Server Error'));
     }
 };
+
+const getProfile = async (req, res) => {
+    try {
+        const userId = req._id;
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.status(404).send(wrapResponse.error(404, 'User Not Found'));
+        }
+        console.log("From Controller", user)
+        return res.status(200).send(wrapResponse.success(200, user));
+    } catch (e) {
+        console.log(e.message)
+    }
+}
 
 const getUserProfile = async (req,res) => {
     try {
@@ -224,7 +243,8 @@ module.exports = {
     getUserPostController,
     getMyPostController,
     deleteProfileController,
-    updateProfileController
+    updateProfileController,
+    getProfile,
 };
 
 
