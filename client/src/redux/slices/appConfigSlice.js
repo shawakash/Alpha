@@ -5,7 +5,7 @@ export const fetchData = createAsyncThunk('user/profile', async (_, thunkAPI) =>
     try {
         thunkAPI.dispatch(setLoading(true));
         const userResponse = await axiosClient.get('/user/profile');
-        console.log('UserInfo', userResponse);
+        // console.log('UserInfo', userResponse);
         return userResponse.result;
     } catch (e) {
         console.error(e);
@@ -15,12 +15,14 @@ export const fetchData = createAsyncThunk('user/profile', async (_, thunkAPI) =>
 
 });
 
+
+
 export const updateProfile = createAsyncThunk('user/updateProfile', async (body, thunkAPI) => {
     try {
         thunkAPI.dispatch(setLoading(true));
         console.log('from appCongif')
         const userResponse = await axiosClient.put('/user/update', body);
-        console.log('UserInfo from',userResponse);
+        console.log('UserInfo from', userResponse);
         return userResponse.result;
     } catch (e) {
         console.error(e.message);
@@ -45,17 +47,20 @@ const appConfigSlice = createSlice({
         builder
             .addCase(fetchData.pending, (state) => {
                 state.status = 'loading';
-            }).addCase(fetchData.fulfilled, (state, action) => {
+            })
+            .addCase(fetchData.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = 'success'
-            }).addCase(fetchData.rejected, (state, action) => {
+            })
+            .addCase(fetchData.rejected, (state, action) => {
                 state.status = 'failed';
-                    state.error = action.error.message
+                state.error = action.error.message
             }).addCase(updateProfile.fulfilled, (state, action) => {
                 state.user = action.payload;
                 console.log('from app', action.payload);
                 state.status = 'success'
-            });
+            })
+            ;
     }
 });
 

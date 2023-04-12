@@ -8,7 +8,8 @@ import { UserOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../redux/slices/appConfigSlice';
-
+import defaultAvatar from '../utils/defaultAvatar.png'
+import {motion} from 'framer-motion'
 
 function HNavbar() {
     const navigate = useNavigate();
@@ -16,8 +17,10 @@ function HNavbar() {
     const user = useSelector((state) => state.appConfigReducer.user);
     return (
 
-        <nav
+        <motion.nav
             className="flex flex-row justify-between items-center bg-transparent z-50 backdrop-blur-lg bg-slate-900 w-full py-3 px-10 pr-16 gap-x-52 border-b-[0.25px] border-slate-500 sticky top-0 bg-opacity-90"
+            animate={{y: 0}}
+            initial={{y: -100}}
         >
             <div
                 className="home text-xl flex gap-x-2 items-center font-cab font-semibold text-white tracking-wider cursor-pointer transition-all bg-transparent"
@@ -83,7 +86,7 @@ function HNavbar() {
                         <Badge dot>
                             <Avatar
                                 className=' cursor-pointer hover:text-teal-500 transition-all'
-                                src={user?.avatar} 
+                                src={user.avatar || defaultAvatar} 
                                 alt='Profile Picture'
                                 shape="circle"
                                 icon={<UserOutlined />}
@@ -94,7 +97,7 @@ function HNavbar() {
                         </Badge></li>
                 </ul>
             </div>
-        </nav>
+        </motion.nav>
 
     );
 }

@@ -9,23 +9,24 @@ import { useNavigate } from 'react-router-dom';
 import { axiosClient } from '../utils/axiosClient';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../redux/slices/postSlice';
+import { fetchData } from '../redux/slices/appConfigSlice';
 
 function CreatePost() {
     const user = useSelector(state => state.appConfigReducer.user);
     const navigate = useNavigate();
+    const inputRef = useRef(null);
     const [postImg, setPostImg] = useState('');
     const [caption, setCaption] = useState('');
     const dispatch = useDispatch();
-
     function handleSubmit(e) {
         e.preventDefault();
-        // dispatch(createPost({
-        //     owner: user._id,
-        //     caption: caption,
-        //     image: postImg
-        // }));
+        dispatch(createPost({
+            owner: user._id,
+            caption: caption,
+            image: postImg
+        }));
+        
     }
-
     function handleDrafting() {
 
     }
@@ -63,7 +64,7 @@ function CreatePost() {
                     type="text"
                     className=" bg-transparent border-slate-300 border px-8 py-1 rounded-full w-full  text-slate-300 text-base outline-none"
                     placeholder="What's on your Mind"
-
+                    ref={inputRef}
                     onChange={(e) => setCaption(e.target.value)}
                 />
             </div>
@@ -143,7 +144,7 @@ function CreatePost() {
                 <button
                     type='submit'
                     className='text-xl px-4 py-1 rounded-lg border-[0.25px] flex items-center gap-x-4 hover:bg-slate-600 transition-all hover:text-[#00C5C8] border-slate-400 hover:border-none hover:font-semibold cursor-pointer'
-                    onClick={handleSubmit}
+                    onSubmit={handleSubmit}
                 >
                     <BsPostcard />
                     Post

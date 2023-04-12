@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {axiosClient} from '../../utils/axiosClient';
 import { KEY_ACCESS_TOKEN, setItem } from '../../utils/localStorageManager';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../redux/slices/userSlice';
+import { setUser } from '../../redux/slices/newsSlice';
 function Login() {
 
     const [username, setUsername] = useState('');
@@ -24,7 +24,7 @@ function Login() {
             console.log(result.result);
             console.log(result.result.user)
             const user = result.result.user;
-            dispatch(setUser(user));
+            // dispatch(setUser(user));
             setItem(KEY_ACCESS_TOKEN, result.result.accessToken);
             navigate('/');
         } catch (error) {
