@@ -56,18 +56,18 @@ const getPostOfFollowings = async (req, res) => {
         //         const post = await Post.findById(postId);
         //         posts.push(post);
         //     }
-            
+
         // }
         const post = await Post.find({
             "owner": {
                 "$in": user.followings,
             }
-        });
-        console.log('From following post',post)
+        }).populate('owner');
+        console.log('From following post', post)
         return res.status(201).send(wrapResponse.success(201, post));
 
         // shortcut
-        
+
         // the above is not prefreable for large number of users/posts
 
     } catch (e) {
@@ -81,7 +81,10 @@ const getMyPostController = async (req, res) => {
         const userId = req._id;
         const post = await Post.find({
             owner: userId
-        }).populate('likes');
+        }).populate({
+            path: 'likes',
+            path: 'owner'
+        });
         if (!post) {
             return res.status(404).send(wrapResponse.error(404, 'Post not Found'));
         }
@@ -98,9 +101,23 @@ const getUserPostController = async (req, res) => {
         if (!userId) {
             return res.status(401).send(wrapResponse.error(401, 'No id provided'));
         }
-        const posts = await Post.find({
-            owner: userId
-        }).populate('likes');
+        console.log('Hola')
+        // const posts = await Post.find({
+        //     owner: userId
+        // }).populate({
+        //     path: owner
+        // });
+
+        const user = await User.findById(userId).populate({
+            path: 'post',
+            populate: {
+                path: 'owner'
+            }
+        });
+        if(!user) {
+            return res.status(404).send(wrapResponse.error(404, 'User not found'));
+        }
+        const posts = user.post;
         if (!posts.length) {
             return res.status(404).send(wrapResponse.error(404, 'This user has not yet posted'));
         }
@@ -113,52 +130,95 @@ const getUserPostController = async (req, res) => {
 const getProfile = async (req, res) => {
     try {
         const userId = req._id;
-        const user = await User.findById(userId);
-        if(!user) {
+        const user = await User.findById(userId).populate({
+            path: 'followings',
+            populate: [
+                {
+                path: 'post',
+                populate: {
+                    path: 'owner'
+                }
+                },
+            {
+                path: 'followings',
+            }
+            ]
+        }).populate({
+            path: 'followers',
+            populate: [
+                { path: 'followers' },
+                { path: 'post' }
+            ]
+        }).populate({
+            path: 'post',
+            populate: [
+                { path: 'owner' }
+            ]
+        });
+        if (!user) {
             return res.status(404).send(wrapResponse.error(404, 'User Not Found'));
         }
         console.log("From Controller", user)
         return res.status(200).send(wrapResponse.success(200, user));
     } catch (e) {
-        console.log(e.message)
+        console.log(e.message);
     }
 }
 
-const getUserProfile = async (req,res) => {
+const getUserProfile = async (req, res) => {
     try {
         const userId = req.body.userId;
         const user = await User.findById(userId).populate({
-            path: 'post',
-            populate: {
-                path: owner,
+            path: 'followings',
+            populate: [
+                {
+                path: 'post',
+                populate: {
+                    path: 'owner'
+                }
+                },
+            {
+                path: 'followings',
             }
+            ]
+        }).populate({
+            path: 'followers',
+            populate: [
+                { path: 'followers' },
+                { path: 'post' }
+            ]
+        }).populate({
+            path: 'post',
+            populate: [
+                { path: 'owner' }
+            ]
         });
-        if(!user) {
+        if (!user) {
             return res.status(404).send(wrapResponse.error(404, 'User Not found'));
         }
-        console.log('user', user)
+        console.log('user', user);
         return res.status(201).send(wrapResponse.success(200, user));
     } catch (error) {
-        
+        return res.status(500).send(wrapResponse.error(500, 'Problem on the Server Side'));
     }
 };
 
-const updateProfileController = async (req,res) => {
+const updateProfileController = async (req, res) => {
 
     try {
         const userId = req._id;
-        const {avatar, name, bio, mobileNumber} = req.body;
+        const { avatar, name, bio, mobileNumber } = req.body;
         const user = await User.findById(userId);
-        if(!user) {
+        if (!user) {
             return res.status(404).send(wrapResponse.error(404, 'No such user in database'));
         }
-        if(name) {
+        if (name) {
             user.name = name;
         }
-        if(bio) {
+        if (bio) {
             user.bio = bio;
         }
-        if(mobileNumber) {
+        if (mobileNumber) {
             user.mobileNumber = mobileNumber;
         }
         if (avatar) {
@@ -180,7 +240,7 @@ const deleteProfileController = async (req, res) => {
     try {
         const userId = req._id;
         const testUser = await User.findById(userId);
-        if(!testUser) {
+        if (!testUser) {
             return res.status(404).send(wrapResponse.error(404, 'No such user in database'));
         }
         const likedPosts = await Post.find({
