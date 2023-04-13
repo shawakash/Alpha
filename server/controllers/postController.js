@@ -49,11 +49,11 @@ const createPostController = async (req, res) => {
         image,
         owner,
     });
-    console.log(post);
+    console.log('from create Post Controller',post);
     if (!post) {
         return res.status(403).json(wrapResponse.error(403, 'Cannot make this post :('));
     } else {
-        user.post.push(post._id);
+        user.post.unshift(post._id);
         await user.save();
         console.log(user.post)
         return res.status(201).json(wrapResponse.success(201, { post }));
@@ -64,8 +64,12 @@ const likeandUnlikePostController = async (req, res) => {
     try {
         const postId = req.body.postId;
         const userId = req._id;
+        
         try {
             const post = await Post.findById(postId);
+            if(post.owner == userId) {
+                return res.status(401).send(wrapResponse.error(401, 'Cannot Like Your Own Post'));
+            }
             if (post.likes.includes(userId)) {
                 post.likes = post.likes.filter(likedBy => likedBy != userId);
                 await post.save();

@@ -158,7 +158,7 @@ const getProfile = async (req, res) => {
         if (!user) {
             return res.status(404).send(wrapResponse.error(404, 'User Not Found'));
         }
-        console.log("From Controller", user)
+        // console.log("From Controller", user)
         return res.status(200).send(wrapResponse.success(200, user));
     } catch (e) {
         console.log(e.message);
