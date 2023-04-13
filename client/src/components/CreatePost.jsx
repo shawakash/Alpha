@@ -8,16 +8,17 @@ import { BsEmojiWink, BsPostcard } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { axiosClient } from '../utils/axiosClient';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost } from '../redux/slices/postSlice';
+import { createPost, getAllPost } from '../redux/slices/postSlice';
 import { fetchData } from '../redux/slices/appConfigSlice';
 
-function CreatePost() {
+function CreatePost(props) {
     const user = useSelector(state => state.appConfigReducer.user);
     const navigate = useNavigate();
     const inputRef = useRef(null);
     const [postImg, setPostImg] = useState('');
     const [caption, setCaption] = useState('');
     const dispatch = useDispatch();
+    const postCreateStatus = useSelector(state => state.postReducer.status);
     function handleSubmit(e) {
         e.preventDefault();
         dispatch(createPost({
@@ -26,6 +27,10 @@ function CreatePost() {
             image: postImg
         }));
         
+        // if(postCreateStatus == 'success') {
+        //     navigate(`/profile/${user._id}`);
+        // }
+        // console.log('create', user)
     }
     function handleDrafting() {
 

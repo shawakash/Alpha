@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllPost, getMyPost } from '../../redux/slices/postSlice';
 import { useLocation } from 'react-router-dom';
 import { fetchData } from '../../redux/slices/appConfigSlice';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 function Feed() {
     // console.log('From Feed', userId);
@@ -18,7 +20,7 @@ function Feed() {
                 userId
             }));
         }
-        dispatch(getMyPost());
+        window.scrollTo(0,0);
     }, [])
     const user = useSelector((state) => state.appConfigReducer.user);
     // const userFetchStatus = useSelector((state) => state.appConfigReducer.status);
@@ -31,7 +33,18 @@ function Feed() {
     const userPostFetchStatus = useSelector(state => state.postReducer.status);
     console.log(userPosts)
     const ownerId = user._id;
-    if ((userPostFetchStatus == 'success' || !userId)) {
+
+    const antIcon = (
+        <LoadingOutlined
+            style={{
+                fontSize: 90,
+            }}
+            spin
+        />
+    );
+
+
+    
         const posts = location.pathname == '/' ? followingPosts : location.pathname == `/profile/${ownerId}` ? myPosts : userPosts;
         console.log('User Posts : \n', posts);
         return (
@@ -54,6 +67,6 @@ function Feed() {
         );
     }
 
-}
+
 
 export default Feed;

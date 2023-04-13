@@ -23,10 +23,8 @@ function Login() {
             });
             console.log(result.result);
             console.log(result.result.user)
-            const user = result.result.user;
-            // dispatch(setUser(user));
             setItem(KEY_ACCESS_TOKEN, result.result.accessToken);
-            navigate('/');
+            navigate('/', {state: 'justLoggedIn'});
         } catch (error) {
             console.error(error);
         }

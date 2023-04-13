@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLoaderData, useLocation } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
 import CreatePost from '../../components/CreatePost';
 import HNavbar from '../../components/HNavbar';
@@ -16,13 +16,18 @@ import { newsPost } from '../../redux/slices/newsSlice';
 
 function Home() {
     const dispatch = useDispatch();
+    const location = useLocation();
+    console.log(location)
     const user = useSelector((state) => state.appConfigReducer.user);
     useEffect(() => {
         dispatch(fetchData());
         dispatch(newsPost());
+        dispatch(getMyPost());
+        window.scrollTo(0,0);
     }, []);
     const newsFetchStatus = useSelector((state) => state.newsReducer.status);
     const userFetchStatus = useSelector((state) => state.appConfigReducer.status);
+    const postFetchStatus = useSelector((state) => state.postReducer.status);
     const newsFetchError = useSelector((state) => state.newsReducer.error);
     const fetchError = useSelector((state) => state.appConfigReducer.error);
     const antIcon = (
@@ -38,8 +43,6 @@ function Home() {
         return <div className="flex flex-col justify-center my-52"><Spin indicator={antIcon} /></div>
     }
 
-    
-    
     if (userFetchStatus == 'failed' && newsFetchStatus == 'failed') {
         return <div className="flex flex-col justify-center my-52 mx-96">{fetchError}</div>
     } if (userFetchStatus == 'success' && newsFetchStatus == 'success') {

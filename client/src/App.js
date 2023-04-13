@@ -17,6 +17,7 @@ import DeleteAccount from './components/DeleteAccount';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingBar from 'react-top-loading-bar';
 import { getAllPost } from './redux/slices/postSlice';
+import RestrictedRoute from './components/RestrictedRoute';
 
 
 function App() {
@@ -24,12 +25,12 @@ function App() {
   const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
   const loadingRef = useRef(null);
   useEffect(() => {
-    if(isLoading) {
+    if (isLoading) {
       loadingRef.current?.continuousStart();
     } else {
       loadingRef.current?.complete();
     }
-  },[isLoading]);
+  }, [isLoading]);
   return (
     <div className="App ">
       <LoadingBar color='#00C5C8' height={5} ref={loadingRef} />
@@ -48,8 +49,10 @@ function App() {
             </Route>
           </Route>
         </Route>
-        <Route path='/login' element={<Login />} />
-        <Route path='signup' element={<Signup />} />
+        <Route element={<RestrictedRoute />}>
+          <Route path='/login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+        </Route>
       </Routes>
     </div>
   );

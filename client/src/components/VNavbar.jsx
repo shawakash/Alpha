@@ -41,7 +41,7 @@ function Navbar() {
                 </li>
                 <li
                     className="text-lg flex gap-x-4 text-slate-400 items-center py-2 px-2 focus:text-[#00C5C8] hover:text-[#00C5C8] transition-all focus:bg-slate-700 hover:bg-slate-700 rounded-lg cursor-pointer"
-                    onClick={() => navigate('/profile/:userId/followers')}
+                    onClick={() => navigate(`/profile/${user._id}/followers`)}
                 ><RiCommunityLine /> Community</li>
                 <li
                     className="text-lg flex gap-x-4 text-slate-400 items-center py-2 px-2 focus:text-[#00C5C8] hover:text-[#00C5C8] transition-all focus:bg-slate-700 hover:bg-slate-700 rounded-lg cursor-pointer"

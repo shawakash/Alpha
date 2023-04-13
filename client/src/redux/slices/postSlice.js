@@ -6,7 +6,7 @@ export const createPost = createAsyncThunk('/post/createPost', async (body, thun
     try {
         thunkAPI.dispatch(setLoading(true));
         const response = await axiosClient.post('/post/createPost', body);
-        // console.log('From create Post',response);
+        console.log('From create Post',response);
         return response.result.post;
     } catch (e) {
         console.error(e.message);
@@ -17,7 +17,7 @@ export const createPost = createAsyncThunk('/post/createPost', async (body, thun
 
 export const getAllPost = createAsyncThunk('/user/getUserPost', async (body, thunkAPI) => {
     try {
-        
+        thunkAPI.dispatch(setLoading(true));
         const allPost = await axiosClient.post('/user/getUserPost', body);
         console.log('From Post Slice', allPost);
         return allPost.result;
@@ -36,6 +36,21 @@ export const getMyPost = createAsyncThunk('/user/getPost', async (body, thunkAPI
         return allMyPost.result;
     } catch (error) {
         console.error(error);
+    } finally {
+        thunkAPI.dispatch(setLoading(false));
+    }
+});
+
+export const likeAndUnlikePost = createAsyncThunk('/like', async (body, thunkAPI) => {
+    try {
+        thunkAPI.dispatch(setLoading(true));
+        const response = await axiosClient.post('/post/likePost', body);
+        console.log('from like thunk :', response.result);
+    } catch (e) {
+        if(e.response.data.message == 'Cannot Like Your Own Post') {
+            alert("Sorry, can't like your own post :(");
+        }
+        console.error(e);
     } finally {
         thunkAPI.dispatch(setLoading(false));
     }

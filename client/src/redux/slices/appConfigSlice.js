@@ -8,7 +8,7 @@ export const fetchData = createAsyncThunk('user/profile', async (_, thunkAPI) =>
         // console.log('UserInfo', userResponse);
         return userResponse.result;
     } catch (e) {
-        console.error(e);
+        console.error('backend error',e);
     } finally {
         thunkAPI.dispatch(setLoading(false));
     }

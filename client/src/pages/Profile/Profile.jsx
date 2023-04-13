@@ -1,26 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Avatar } from 'antd';
 import { RiUserFollowFill } from 'react-icons/ri';
-import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '../../utils/defaultAvatar.png'
 import { fetchUserData } from '../../redux/slices/userSlice';
+import Feed from '../../components/Feed/Feed';
 
 function Profile() {
     const { userId } = useParams();
     const dispatch = useDispatch();
+    const location = useLocation();
+    // const outletRef = useRef();
+    // const scrollElement = location.pathname.split('/')[3] || 0;
     const [followState, setFollowState] = useState(false);
     useEffect(() => {
         console.log('from userEffect', userId)
         dispatch(fetchUserData({
             userId
         }))
+        // if(scrollElement){
+        //     outletRef.current.scrollIntoView(); 
+        // }
+        
+            window.scrollTo(0,0);
+        
     }, [userId])
     let isFollowing = false;
 
     console.log(userId);
     const navigate = useNavigate();
-    // const user
     const userFetchStatus = useSelector(state => state.userReducer.status);
     const localUser = useSelector(state => state.appConfigReducer.user);
     const user = useSelector(state => state.userReducer.user);
@@ -70,7 +79,8 @@ function Profile() {
                         </button>
                     }
                     <Link to={`/profile/${userId}`}>
-                        <button
+                        <button 
+                            
                             className="border-[1px] border-slate-400 px-3 py-2 rounded-2xl hover:bg-teal-600 hover:text-white hover:border-transparent transition-all"
                         >Posts</button>
 
