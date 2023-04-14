@@ -24,8 +24,9 @@ const postSchema = mongoose.Schema({
             ref: 'User',
         }
     ],
+    
 },{
-    timestampes: true
+    timestamps: true,
 });
 
 module.exports = mongoose.model('Post', postSchema);

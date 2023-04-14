@@ -3,6 +3,7 @@ const User = require('../models/User');
 const wrapResponse = require('../utils/wrapResponse');
 const cloudinary = require('cloudinary').v2;
 
+
 const getAllPosController = async (req, res) => {
     const owner = req._id;
     const user = await User.findById(owner);
@@ -26,37 +27,45 @@ const getAllPosController = async (req, res) => {
 }
 
 const createPostController = async (req, res) => {
-    const caption = req.body.caption;
-    const postImage = req.body.image;
-    const owner = req._id;
-    let image = {}
-    const user = await User.findById(req._id);
-    if (!caption) {
-        return res.status(401).send(wrapResponse.error(401, 'Caption Needed'));
-    }
-    if(postImage) {
-        const cloudImg = await cloudinary.uploader.upload(postImage, {
-            folder: "postImg",
-        });
-        image = {
-            url: cloudImg.secure_url,
-            publicId: cloudImg.public_id
+    try {
+        
+        const caption = req.body.caption;
+        const postImage = req.body.image;
+        const owner = req._id;
+        let image = {}
+        const user = await User.findById(req._id);
+        if (!caption) {
+            return res.status(401).send(wrapResponse.error(401, 'Caption Needed'));
         }
-    }
-    // 
-    const post = await Post.create({
-        caption,
-        image,
-        owner,
-    });
-    console.log('from create Post Controller',post);
-    if (!post) {
-        return res.status(403).json(wrapResponse.error(403, 'Cannot make this post :('));
-    } else {
-        user.post.unshift(post._id);
-        await user.save();
-        console.log(user.post)
-        return res.status(201).json(wrapResponse.success(201, { post }));
+        if(postImage) {
+            const cloudImg = await cloudinary.uploader.upload(postImage, {
+                folder: "postImg",
+            });
+            image = {
+                url: cloudImg.secure_url,
+                publicId: cloudImg.public_id
+            }
+        }
+        //
+        try {
+            const post = await Post.create({
+                caption,
+                image,
+                owner,
+            });
+            console.log('from create Post Controller',post);
+            user.post.unshift(post._id);
+            await user.save();
+            console.log(user.post)
+            return res.status(201).json(wrapResponse.success(201, { post }));
+            
+        } catch (error) {
+            return res.status(403).json(wrapResponse.error(403, 'Cannot make this post :('));
+            
+        }
+        
+    } catch (error) {
+        return res.status(500).send(wrapResponse.error(500, 'Problem on the server Side'))
     }
 };
 
@@ -88,6 +97,23 @@ const likeandUnlikePostController = async (req, res) => {
         return res.status(500).send(wrapResponse.error(500, e.message));
     }
 
+};
+
+const likedPostController = async (req, res) => {
+    try {
+        const userId = req._id;
+        const allPost = await Post.find({
+            "likes": {
+                "$in": userId
+            }
+        }).populate({
+            path: 'owner'
+        }) || [];
+        console.log('From Liked Post Controller :', allPost);
+        return res.status(200).send(wrapResponse.success(200, allPost));
+    } catch (e) {
+        return res.status(500).send(wrapResponse.error(500, 'Server Error'));
+    }
 };
 
 const updatePostController = async (req, res) => {
@@ -134,4 +160,11 @@ const deletePostController = async (req, res) => {
 
 };
 
-module.exports = { getAllPosController, createPostController, likeandUnlikePostController, updatePostController, deletePostController };
+module.exports = { 
+    getAllPosController, 
+    createPostController, 
+    likeandUnlikePostController, 
+    updatePostController, 
+    deletePostController ,
+    likedPostController,
+};
