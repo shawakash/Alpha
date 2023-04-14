@@ -1,58 +1,44 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from "../../utils/axiosClient";
-import { setLoading } from "./appConfigSlice";
+import { setLoading, setToast } from "./appConfigSlice";
+import { TOAST_ERROR } from "../../App";
 
-export const createPost = createAsyncThunk('/post/createPost', async (body, thunkAPI) => {
+export const createPost = createAsyncThunk('/post/createPost', async (body) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
         const response = await axiosClient.post('/post/createPost', body);
         console.log('From create Post',response);
         return response.result.post;
     } catch (e) {
-        console.error(e.message);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
+        console.error(e);
     }
 });
 
-export const getAllPost = createAsyncThunk('/user/getUserPost', async (body, thunkAPI) => {
+export const getAllPost = createAsyncThunk('/user/getUserPost', async (body) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
         const allPost = await axiosClient.post('/user/getUserPost', body);
         console.log('From Post Slice', allPost);
-        return allPost.result;
+        return allPost.result.reverse();
     } catch (error) {
         console.error(error);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
     }
 });
 
-export const getMyPost = createAsyncThunk('/user/getPost', async (body, thunkAPI) => {
+export const getMyPost = createAsyncThunk('/user/getPost', async (_) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
-        const allMyPost = await axiosClient.get('/user/getPost', body);
+        const allMyPost = await axiosClient.get('/user/getPost');
         // console.log('From Post Slice', allMyPost);
-        return allMyPost.result;
+        return allMyPost.result.reverse();
     } catch (error) {
         console.error(error);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
     }
 });
 
-export const likeAndUnlikePost = createAsyncThunk('/like', async (body, thunkAPI) => {
+export const likeAndUnlikePost = createAsyncThunk('/like', async (body) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
         const response = await axiosClient.post('/post/likePost', body);
         console.log('from like thunk :', response.result);
     } catch (e) {
-        if(e.response.data.message == 'Cannot Like Your Own Post') {
-            alert("Sorry, can't like your own post :(");
-        }
         console.error(e);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
     }
 });
 
@@ -75,9 +61,13 @@ const postSlice = createSlice({
         isLoading: false,
         userPosts: [], 
         myPosts: [],
+        likedPost: [],
         status: 'idle'
     },
     reducers: {
+        setLikedPost: (state, action) => {
+            state.likedPost = action.payload;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -117,4 +107,4 @@ const postSlice = createSlice({
 });
 
 export default postSlice.reducer;
-export const { } = postSlice.actions;
+export const { setLikedPost } = postSlice.actions;

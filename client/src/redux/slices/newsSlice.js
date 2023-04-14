@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 
-export const newsPost = createAsyncThunk('/news', async (_, thunkAPI) => {
+export const newsPost = createAsyncThunk('/news', async (_) => {
     try {
         const apiUrl = 'https://newsapi.org/v2/everything?domains=techcrunch.com,thenextweb.com&apiKey=93f055bafb73468da40509b958d5e3dc';
         console.log(apiUrl)

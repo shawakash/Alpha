@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '../../utils/defaultAvatar.png'
 import { fetchUserData } from '../../redux/slices/userSlice';
 import Feed from '../../components/Feed/Feed';
+import { axiosClient } from '../../utils/axiosClient';
+import { fetchData } from '../../redux/slices/appConfigSlice';
 
 function Profile() {
     const { userId } = useParams();
@@ -14,6 +16,8 @@ function Profile() {
     // const outletRef = useRef();
     // const scrollElement = location.pathname.split('/')[3] || 0;
     const [followState, setFollowState] = useState(false);
+    const localUser = useSelector(state => state.appConfigReducer.user);
+    const user = useSelector(state => state.userReducer.user);
     useEffect(() => {
         console.log('from userEffect', userId)
         dispatch(fetchUserData({
@@ -22,27 +26,39 @@ function Profile() {
         // if(scrollElement){
         //     outletRef.current.scrollIntoView(); 
         // }
-        
+        dispatch(fetchData())
             window.scrollTo(0,0);
-        
+            setFollowState(user?.followers?.find(follower => follower._id == localUser?._id));
+            // user?.followers?.forEach((follower) => {
+            //     if(follower._id == localUser._id) {
+            //         setFollowState(true);
+            //     }
+            // });
     }, [userId])
     let isFollowing = false;
 
     console.log(userId);
     const navigate = useNavigate();
     const userFetchStatus = useSelector(state => state.userReducer.status);
-    const localUser = useSelector(state => state.appConfigReducer.user);
-    const user = useSelector(state => state.userReducer.user);
+    
     if (userFetchStatus == 'success') {
         console.log('from pro', user)
         const isLocalUser = userId == localUser._id ? true : false;
         if (!isLocalUser) {
-            user.followers.map(follower => {
+            user?.followers?.map(follower => {
                 if (follower._id == localUser._id) {
                     isFollowing = true;
                 }
             });
         }
+
+        async function handleFollow() {
+            const response = await axiosClient.post('/user/follow', {followId: userId})
+            dispatch(fetchUserData({userId}));
+            dispatch(fetchData());
+            setFollowState(!followState);
+        }
+
         return (
             <div className='flex flex-col items-center py-10 backdrop-blur-xl rounded-lg border-slate-500 border-[0.25px] gap-y-8 w-full'>
                 <div className="img w-fit">
@@ -59,22 +75,22 @@ function Profile() {
                         {user?.name}
                     </div>
                     <div className="username text-slate-400 text-lg italic">
-                        {user.username}
+                        {user?.username}
                     </div>
                 </div>
                 <div className="email text-slate-300 font-medium font-rob text-xl ">
-                    {user.email}
+                    {user?.email}
                 </div>
                 <div className="About flex w-[450px] text-center justify-center font-normal leading-6 font-rob text-slate-300 tracking-wider">
-                    {user.bio}
+                    {user?.bio}
                 </div>
                 <div
                     className="Utilities flex gap-x-10 font-rob text-slate-300 text-lg"
                 >
                     {isLocalUser ? '' :
                         <button
-                            className="border-[1px] border-slate-400 px-3 py-2 rounded-2xl hover:bg-teal-600 hover:text-white hover:border-transparent transition-all"
-                            onClick={() => setFollowState(!followState)}
+                            className={!followState? "hover:border-[1px] border-[1px] border-transparent outline-none text-white hover:border-slate-400 px-3 py-2 rounded-2xl bg-teal-600 font-medium hover:bg-transparent hover:text-white transition-all" : "border-[1px] border-slate-400 px-3 py-2 rounded-2xl hover:bg-teal-600 hover:text-white hover:border-transparent transition-all" }
+                            onClick={handleFollow}
                         >{followState ? 'Unfollow' : 'Follow'}
                         </button>
                     }
@@ -176,7 +192,6 @@ function Profile() {
             </div>
         );
     }
-
 }
 
 export default Profile;

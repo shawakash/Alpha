@@ -62,7 +62,7 @@ function HNavbar() {
                     <li
                         className=" cursor-pointer hover:text-teal-500 transition-all"
                         onClick={() => {
-                            dispatch(setLoading(true));                            // navigate('/login')
+                            navigate('/logout')
                         }}
                     >
                         <FiLogOut />
@@ -75,7 +75,7 @@ function HNavbar() {
                     </li>
                     <li
                         className=" cursor-pointer hover:text-teal-500 transition-all"
-                        onClick={() => navigate('/profile/:userId/updateProfile')}
+                        onClick={() => navigate(`/profile/${user._id}/updateProfile`)}
                     >
                         <MdOutlineTipsAndUpdates />
                     </li>

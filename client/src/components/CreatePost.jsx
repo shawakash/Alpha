@@ -9,7 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { axiosClient } from '../utils/axiosClient';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost, getAllPost } from '../redux/slices/postSlice';
-import { fetchData } from '../redux/slices/appConfigSlice';
+import { fetchData, setToast } from '../redux/slices/appConfigSlice';
+import { TOAST_SUCCESS } from '../App';
 
 function CreatePost(props) {
     const user = useSelector(state => state.appConfigReducer.user);

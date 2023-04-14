@@ -2,18 +2,22 @@ import { Avatar } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { RiUserFollowFill } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ImPencil } from 'react-icons/im';
-import { updateProfile } from '../../redux/slices/appConfigSlice';
+import { fetchData, setToast, updateProfile } from '../../redux/slices/appConfigSlice';
+import { TOAST_SUCCESS } from '../../App';
+import { axiosClient } from '../../utils/axiosClient';
 
 function UpdateProfile() {
     const user = useSelector(state => state.appConfigReducer.user);
+    const location = useLocation();
+    const userId = location.pathname.split('/')[2];
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [newName, setNewName] = useState(user.name);
-    const [newNumber, setNewNumber] = useState(user.mobileNumber);
-    const [newBio, setNewBio] = useState(user.bio);
-    const [newAvatar, setNewAvatar] = useState(user.avatar);
+    const [newName, setNewName] = useState(user?.name);
+    const [newNumber, setNewNumber] = useState(user?.mobileNumber);
+    const [newBio, setNewBio] = useState(user?.bio);
+    const [newAvatar, setNewAvatar] = useState(user?.avatar);
     console.log('newAvatar', newAvatar);
 
     useEffect(() => {
@@ -23,14 +27,24 @@ function UpdateProfile() {
         setNewAvatar(user?.avatar || '');
     }, [user]);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        dispatch(updateProfile({
+        const body = {
             name: newName,
             bio: newBio,
             avatar: newAvatar,
             mobileNumber: newNumber
-        }));
+        }
+        const userResponse = await axiosClient.put('/user/update', body);
+        console.log('UserInfo from', userResponse);
+        if (userResponse.status == 'success') {
+            dispatch(fetchData());
+            dispatch(setToast({
+                type: TOAST_SUCCESS,
+                message: 'Profile Updated'
+            }));
+            // navigate(`/profile/${user._id}`)
+        }
     }
 
     function handleImageChange(e) {
@@ -58,7 +72,7 @@ function UpdateProfile() {
                     >
                         <Avatar
                             shape='circle'
-                            src={newAvatar ? newAvatar : user.avatar}
+                            src={newAvatar ? newAvatar : user?.avatar}
                             size={200}
                             className='flex text-slate-400 items-center justify-center cursor-pointer'
                         // onClick={() => { }}
@@ -136,7 +150,7 @@ function UpdateProfile() {
                     </div>
                     <div className="">
                         <button
-                        onClick={handleSubmit}
+                            onClick={handleSubmit}
                             type='submit'
                             className="border-[1px] border-slate-400 px-3 py-2 rounded-2xl hover:bg-teal-600 hover:text-white hover:border-transparent transition-all"
                         >

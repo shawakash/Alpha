@@ -45,13 +45,13 @@ function Navbar() {
                 ><RiCommunityLine /> Community</li>
                 <li
                     className="text-lg flex gap-x-4 text-slate-400 items-center py-2 px-2 focus:text-[#00C5C8] hover:text-[#00C5C8] transition-all focus:bg-slate-700 hover:bg-slate-700 rounded-lg cursor-pointer"
-                    onClick={() => { navigate('/profile/:userId/') }}
+                    onClick={() => { navigate(`/profile/${user._id}`) }}
                 >
                     <BsFillFilePostFill />My Posts
                 </li>
                 <li
                     className="text-lg flex gap-x-4 text-slate-400 items-center py-2 px-2 focus:text-[#00C5C8] hover:text-[#00C5C8] transition-all focus:bg-slate-700 hover:bg-slate-700 rounded-lg cursor-pointer"
-                    onClick={() => navigate('/profile/:userId/likedPost')}>
+                    onClick={() => navigate(`/profile/${user._id}/likedPost`)}>
                     <AiOutlineLike />
                     Liked Post
                 </li>
@@ -64,7 +64,7 @@ function Navbar() {
             >
                 <div
                     className="text-slate-300 tracking-wider px-2 font-rob font-medium [word-spacing:3px] cursor-pointer"
-                    onClick={() => navigate('/profile/:userId/followers')}
+                    onClick={() => navigate(`/profile/${user._id}/followers`)}
                 >
                     My Community
                 </div>
@@ -95,7 +95,7 @@ function Navbar() {
                 <Link to={`/profile/${user._id}`}>
                     <li
                         className="flex text-slate-400 items-center gap-x-4 hover:bg-slate-800 py-2 rounded-xl transition-all peer cursor-pointer w-full"
-                        onClick={() => navigate('/profile/:userId')}
+                        onClick={() => navigate(`/profile/${user._id}`)}
                     >
                         <Avatar
                             shape='circle'
@@ -107,14 +107,14 @@ function Navbar() {
                     </li></Link>
                 <li
                     className="flex items-center text-slate-400 px-2 gap-x-4 hover:bg-slate-800 py-2 rounded-xl transition-all peer cursor-pointer"
-                    onClick={() => navigate('/logout')}
+                    onClick={() => {navigate('/logout')}}
                 >
                     <FiLogOut />
                     Logout
                 </li>
                 <li
                     className="flex text-slate-400 items-center px-2 gap-x-4 hover:bg-slate-800 py-2 rounded-xl transition-all peer cursor-pointer"
-                    onClick={() => navigate('/profile/:userId/deleteProfile')}
+                    onClick={() => navigate(`/profile/${user._id}/deleteProfile`)}
                 >
                     <AiOutlineDelete />
                     Delete Profile

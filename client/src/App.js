@@ -18,12 +18,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoadingBar from 'react-top-loading-bar';
 import { getAllPost } from './redux/slices/postSlice';
 import RestrictedRoute from './components/RestrictedRoute';
+import toast, { Toaster } from 'react-hot-toast';
+import Logout from './components/Logout';
 
+export const TOAST_SUCCESS = 'toast_success';
+export const TOAST_ERROR = 'toast_error';
+export const TOAST_JSX = 'toast_jsx';
 
 function App() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
+  const toastData = useSelector((state) => state.appConfigReducer.toastData);
   const loadingRef = useRef(null);
+
   useEffect(() => {
     if (isLoading) {
       loadingRef.current?.continuousStart();
@@ -31,9 +38,27 @@ function App() {
       loadingRef.current?.complete();
     }
   }, [isLoading]);
+
+  useEffect(() => {
+
+    switch (toastData.type) {
+
+      case TOAST_SUCCESS:
+        toast.success(toastData.message);
+        break;
+
+      case TOAST_ERROR:
+        toast.error(toastData.message);
+        break;
+
+        
+    }
+  }, [toastData])
+
   return (
     <div className="App ">
       <LoadingBar color='#00C5C8' height={5} ref={loadingRef} />
+      <div><Toaster /></div>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route element={<Home />}>
@@ -48,6 +73,7 @@ function App() {
               <Route path='deleteProfile' element={<DeleteAccount />} />
             </Route>
           </Route>
+          <Route path='logout' element={<Logout />} />
         </Route>
         <Route element={<RestrictedRoute />}>
           <Route path='/login' element={<Login />} />

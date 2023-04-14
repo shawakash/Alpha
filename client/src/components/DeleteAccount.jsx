@@ -1,15 +1,38 @@
 import { Alert, Space } from 'antd';
 import React, { useState } from 'react'
 import { FaLock } from 'react-icons/fa';
+import { axiosClient } from '../utils/axiosClient';
+import { useDispatch, useSelector } from 'react-redux';
+import { setToast } from '../redux/slices/appConfigSlice';
+import { TOAST_SUCCESS } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 function DeleteAccount() {
     const [password, setPassword] = useState('');
+    const user = useSelector(state => state.appConfigReducer.user);
+    console.log(user);
+    const firstName = user?.name.split(" ")[0];
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    async function handleDelete(e) {
+        e.preventDefault();
+        const response = await axiosClient.delete('/user/deleteProfile');
+        if(response.statusCode == 200) {
+            dispatch(setToast({
+                type: TOAST_SUCCESS,
+                message: `Adios ${firstName}`
+            }));
+            navigate('/logout');
+        }
+    }
     return (
         <div className="flex gap-x-10 w-full px-10 bg-yellow-900 py-10 rounded-3xl">
             <div className="message text-red-200 text-xl w-1/2">
                 Enter your password to delete your account!
             </div>
-            <div className="pass flex flex-col relative w-1/2">
+            <form
+            onSubmit={handleDelete}
+            className="pass flex flex-col relative w-1/2">
                 <FaLock
                     color='white'
                     className='absolute right-1 top-2'
@@ -31,7 +54,7 @@ function DeleteAccount() {
                 >
                     Password
                 </label>
-            </div>
+            </form>
         </div>
 
     );

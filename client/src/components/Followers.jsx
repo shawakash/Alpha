@@ -235,7 +235,7 @@ function Followers() {
                 name = {user.name}
                 email = {user.email}
             />
-            {user.followers.map(follower => {
+            {user?.followers?.map(follower => {
                 return (
                     <ListCard
                         id={follower._id}

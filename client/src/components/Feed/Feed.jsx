@@ -14,21 +14,27 @@ function Feed() {
     const location = useLocation();
     const userId = (location.pathname.split('/'))[2];
     console.log(location)
+    
     useEffect(() => {
         if (userId) {
             dispatch(getAllPost({
                 userId
             }));
+            
         }
         window.scrollTo(0,0);
     }, [])
+    
     const user = useSelector((state) => state.appConfigReducer.user);
     // const userFetchStatus = useSelector((state) => state.appConfigReducer.status);
     const myPosts = useSelector((state) => state.postReducer.myPosts);
+    console.log(user)
+
     const followingPosts = []        // useSelector((state) => state.postReducer.followingPosts);
-    user.followings.forEach((following) => {
+    user?.followings?.forEach((following) => {
         following.post.map(post => followingPosts.push(post))
     });
+
     const userPosts = useSelector((state) => state.postReducer.userPosts);
     const userPostFetchStatus = useSelector(state => state.postReducer.status);
     console.log(userPosts)
@@ -43,23 +49,25 @@ function Feed() {
         />
     );
 
-
     
-        const posts = location.pathname == '/' ? followingPosts : location.pathname == `/profile/${ownerId}` ? myPosts : userPosts;
-        console.log('User Posts : \n', posts);
-        return (
-            <>
+    
+    const posts = location.pathname == '/' ? followingPosts : location.pathname == `/profile/${ownerId}` ? myPosts : userPosts;
+    console.log('User Posts : \n', posts);
+    return (
+        <>
                 {location.pathname == `/profile/${ownerId}` ? <CreatePost /> : ''}
                 {posts?.map((post) => {
+                    console.log(post?.updatedAt?.split(':'));
                     return (
                         <Post
-                            id={post._id}
-                            key={post._id}
-                            caption={post.caption}
-                            imgUrl={post.image?.url ? `${post?.image?.url}` : ''}
-                            likes={post.likes}
-                            comments={post.comments}
-                            owner={post.owner}
+                            id={post?._id}
+                            key={post?._id}
+                            caption={post?.caption}
+                            imgUrl={post?.image?.url ? `${post?.image?.url}` : ''}
+                            likes={post?.likes}
+                            comments={post?.comments}
+                            owner={post?.owner}
+                            updatedAt={(post?.updatedAt?.split(':')[0])}
                         />
                     );
                 })}

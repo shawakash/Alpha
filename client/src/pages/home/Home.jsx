@@ -24,7 +24,7 @@ function Home() {
         dispatch(newsPost());
         dispatch(getMyPost());
         window.scrollTo(0,0);
-    }, []);
+    }, [dispatch]);
     const newsFetchStatus = useSelector((state) => state.newsReducer.status);
     const userFetchStatus = useSelector((state) => state.appConfigReducer.status);
     const postFetchStatus = useSelector((state) => state.postReducer.status);
@@ -40,12 +40,12 @@ function Home() {
     );
     const news = useSelector((state) => state.newsReducer.news);
     if (userFetchStatus == 'loading' || newsFetchStatus == 'loading' ) {
-        return <div className="flex flex-col justify-center my-52"><Spin indicator={antIcon} /></div>
+        // return //<div className="flex flex-col justify-center my-52"><Spin indicator={antIcon} /></div>
     }
 
     if (userFetchStatus == 'failed' && newsFetchStatus == 'failed') {
         return <div className="flex flex-col justify-center my-52 mx-96">{fetchError}</div>
-    } if (userFetchStatus == 'success' && newsFetchStatus == 'success') {
+    } //if (userFetchStatus == 'success' && newsFetchStatus == 'success') {
         // console.log(user);
         // console.log(news);
         return (
@@ -66,6 +66,6 @@ function Home() {
         </div>
     );
     }
-}
+// }
 
 export default Home;

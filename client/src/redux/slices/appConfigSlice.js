@@ -1,16 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from "../../utils/axiosClient";
 
-export const fetchData = createAsyncThunk('user/profile', async (_, thunkAPI) => {
+export const fetchData = createAsyncThunk('user/profile', async (_) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
         const userResponse = await axiosClient.get('/user/profile');
         // console.log('UserInfo', userResponse);
         return userResponse.result;
     } catch (e) {
         console.error('backend error',e);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
     }
 
 });
@@ -18,17 +15,7 @@ export const fetchData = createAsyncThunk('user/profile', async (_, thunkAPI) =>
 
 
 export const updateProfile = createAsyncThunk('user/updateProfile', async (body, thunkAPI) => {
-    try {
-        thunkAPI.dispatch(setLoading(true));
-        console.log('from appCongif')
-        const userResponse = await axiosClient.put('/user/update', body);
-        console.log('UserInfo from', userResponse);
-        return userResponse.result;
-    } catch (e) {
-        console.error(e.message);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
-    }
+    
 });
 
 const appConfigSlice = createSlice({
@@ -36,11 +23,15 @@ const appConfigSlice = createSlice({
     initialState: {
         isLoading: false,
         user: {},
+        toastData: {},
         status: 'idle',
     },
     reducers: {
         setLoading: (state, action) => {
             state.isLoading = action.payload;
+        },
+        setToast: (state, action) => {
+            state.toastData = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -55,14 +46,14 @@ const appConfigSlice = createSlice({
             .addCase(fetchData.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message
-            }).addCase(updateProfile.fulfilled, (state, action) => {
-                state.user = action.payload;
-                console.log('from app', action.payload);
-                state.status = 'success'
-            })
-            ;
+             })//.addCase(updateProfile.fulfilled, (state, action) => {
+            //     state.user = action.payload;
+            //     console.log('from app', action.payload);
+            //     state.status = 'success'
+            // })
+                ;
     }
 });
 
 export default appConfigSlice.reducer;
-export const { setLoading } = appConfigSlice.actions;
+export const { setLoading, setToast } = appConfigSlice.actions;

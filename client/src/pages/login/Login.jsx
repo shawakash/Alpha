@@ -8,6 +8,8 @@ import {axiosClient} from '../../utils/axiosClient';
 import { KEY_ACCESS_TOKEN, setItem } from '../../utils/localStorageManager';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/newsSlice';
+import { setToast } from '../../redux/slices/appConfigSlice';
+import { TOAST_SUCCESS } from '../../App';
 function Login() {
 
     const [username, setUsername] = useState('');
@@ -24,7 +26,11 @@ function Login() {
             console.log(result.result);
             console.log(result.result.user)
             setItem(KEY_ACCESS_TOKEN, result.result.accessToken);
-            navigate('/', {state: 'justLoggedIn'});
+            dispatch(setToast({
+                type: TOAST_SUCCESS,
+                message: 'Logged In Successfully'
+            }));
+            navigate('/');
         } catch (error) {
             console.error(error);
         }

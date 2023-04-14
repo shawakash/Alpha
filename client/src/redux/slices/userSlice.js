@@ -1,18 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from "../../utils/axiosClient";
 
-export const fetchUserData = createAsyncThunk('/user/getUserProfile', async (body, thunkAPI) => {
+export const fetchUserData = createAsyncThunk('/user/getUserProfile', async (body) => {
     try {
-        thunkAPI.dispatch(setLoading(true));
         const userResponse = await axiosClient.post('/user/getUserProfile', body);
         console.log('UserInfo', userResponse);
         return userResponse.result;
     } catch (e) {
         console.error(e);
-    } finally {
-        thunkAPI.dispatch(setLoading(false));
     }
-
 });
 
 
