@@ -17,40 +17,44 @@ function Profile() {
     // const scrollElement = location.pathname.split('/')[3] || 0;
     const [followState, setFollowState] = useState(false);
     const localUser = useSelector(state => state.appConfigReducer.user);
-    const user = useSelector(state => state.userReducer.user);
+    const userProfile = useSelector(state => state.userReducer.user);
     useEffect(() => {
         console.log('from userEffect', userId)
         dispatch(fetchUserData({
             userId
         }))
         // if(scrollElement){
-        //     outletRef.current.scrollIntoView(); 
-        // }
-        dispatch(fetchData())
+            //     outletRef.current.scrollIntoView(); 
+            // }
+            dispatch(fetchData())
             window.scrollTo(0,0);
             setFollowState(user?.followers?.find(follower => follower._id == localUser?._id));
             // user?.followers?.forEach((follower) => {
-            //     if(follower._id == localUser._id) {
-            //         setFollowState(true);
-            //     }
-            // });
-    }, [userId])
-    let isFollowing = false;
-
-    console.log(userId);
-    const navigate = useNavigate();
-    const userFetchStatus = useSelector(state => state.userReducer.status);
-    
-    if (userFetchStatus == 'success') {
-        console.log('from pro', user)
-        const isLocalUser = userId == localUser._id ? true : false;
-        if (!isLocalUser) {
-            user?.followers?.map(follower => {
-                if (follower._id == localUser._id) {
-                    isFollowing = true;
-                }
-            });
-        }
+                //     if(follower._id == localUser._id) {
+                    //         setFollowState(true);
+                    //     }
+                    // });
+                }, [userId])
+                let isFollowing = false;
+                
+                console.log(userId);
+                const navigate = useNavigate();
+                const userFetchStatus = useSelector(state => state.userReducer.status);
+                const localUserFetchStatus = useSelector(state => state.appConfigReducer.status);
+                
+                // if (userFetchStatus == 'success' && localUserFetchStatus) {
+                    // console.log('from pro', user)
+                    let user = localUser;
+                    const isLocalUser = userId == localUser._id ? true : false;
+                    if (!isLocalUser) {
+                        user = userProfile;
+                        user?.followers?.map(follower => {
+                            if (follower._id == localUser._id) {
+                                isFollowing = true;
+                            }
+                        });
+                    }
+                    console.log('From Pofile', user)
 
         async function handleFollow() {
             const response = await axiosClient.post('/user/follow', {followId: userId})
@@ -192,6 +196,8 @@ function Profile() {
             </div>
         );
     }
-}
+
+// }
+
 
 export default Profile;

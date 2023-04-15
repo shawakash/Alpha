@@ -10,6 +10,10 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/newsSlice';
 import { setToast } from '../../redux/slices/appConfigSlice';
 import { TOAST_SUCCESS } from '../../App';
+import { motion } from 'framer-motion';
+import { loginVariants } from '../../utils/variants';
+
+
 function Login() {
 
     const [username, setUsername] = useState('');
@@ -38,7 +42,12 @@ function Login() {
     }
     return (
         <section className="w-full flex items-center justify-center ">
-            <div className="Login w-fit m-56  hover:border-[#e1e1e180] border-[#e1e1e180] backdrop-blur-[5px] focus-within:backdrop-blur-[12px] border-2 rounded-3xl transition-all bg-transparent flex flex-col pt-5 items-center gap-y-4">
+            <motion.div 
+                variants={loginVariants}
+                initial='hidden'
+                whileInView='show'
+                whileHover='hover'
+            className="Login w-fit m-56  hover:border-[#e1e1e180] border-[#e1e1e180] backdrop-blur-[5px] focus-within:backdrop-blur-[12px] border-2 rounded-3xl transition-all bg-transparent flex flex-col pt-5 items-center gap-y-4">
                 <header className='w-fit px-1 mt-4 py-2 text-3xl font-bold font-popins text-white  tracking-wide'>Welcome Back</header>
                 <form className="rounded-3xl  flex flex-col p-8 pt-12 gap-y-16 font-mon w-[400px] h-[400px]  " onSubmit={handleSubmit}>
                     <div className="user flex flex-col relative ">
@@ -67,7 +76,7 @@ function Login() {
                     </div>
 
                 </form>
-            </div>
+            </motion.div>
         </section>
     );
 }
